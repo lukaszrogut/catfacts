@@ -1,26 +1,22 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom';
-import { CatFactInterface } from '../interfaces';
-import CatFact from './CatFact';
+import { ReactElement } from 'react';
+import { Link, useLoaderData } from 'react-router-dom';
 
-export default function CatFactList() {
-    const [catFacts, setCatFacts] = useState<CatFactInterface[] | null>(null);
+import { CatFactInterface } from '@/interfaces/index';
+import CatFact from '@/components/CatFact';
 
-    useEffect(() => {
-        fetch('https://cat-fact.herokuapp.com/facts')
-        .then(response => response.json())
-        .then(data => setCatFacts(data))
-        .catch(error => console.error(error));
-    }, []);
+export default function CatFactList(): ReactElement {
+  const catFactList = useLoaderData() as CatFactInterface[];
 
-    return (
-        <div className='cats__list'>
-            {catFacts?.map( (data: CatFactInterface) => {
-                return <Link key={data._id} to={`catfact/${data._id}`}>
-                    <CatFact {...data} />
-                </Link> })
-            }
-            {!catFacts && <p>No facts to display</p>}
-        </div>
-    )
+  return (
+    <div className='cats__list'>
+      {catFactList?.map((data: CatFactInterface) => {
+        return (
+          <Link key={data._id} to={`fact/${data._id}`}>
+            <CatFact {...data} />
+          </Link>
+        );
+      })}
+      {!catFactList && <p>No facts to display</p>}
+    </div>
+  );
 }
